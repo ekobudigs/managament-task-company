@@ -21,6 +21,12 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'department_id',
+        'position_id',
+        'contact_number',
+        'hire_date',
+        'birth_date',
+        'address',
     ];
 
     /**
@@ -42,4 +48,13 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class, 'department_id');
+    }
+    public function position()
+    {
+        return $this->belongsTo(Position::class, 'position_id');
+    }
 }
