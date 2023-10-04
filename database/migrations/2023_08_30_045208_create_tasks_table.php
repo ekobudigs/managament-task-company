@@ -14,18 +14,19 @@ return new class extends Migration
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->text('description');
-            $table->unsignedBigInteger('created_by');
-            $table->unsignedBigInteger('assigned_to')->nullable();
+            $table->text('description'); // (Deskripsi tugas)
+            $table->unsignedBigInteger('created_by'); //(Foreign Key referencing Users table, ID pencipta tugas)
+            $table->unsignedBigInteger('assigned_to')->nullable(); //(Foreign Key referencing Users table, ID penerima tugas, bisa NULL jika belum ditugaskan)
+            $table->string('status'); //status (Status tugas, misalnya ongoing, completed, pending, dll)
+            $table->date('due_date'); // (Batas waktu tugas)
+            $table->timestamp('completed_at')->nullable(); // (Datetime field, NULL jika belum selesai)
+            $table->string('priority'); //(Prioritas tugas, misalnya rendah, sedang, tinggi)
+            $table->integer('estimated_hours'); // (Estimasi waktu yang dibutuhkan untuk menyelesaikan tugas)
+            $table->integer('actual_hours')->nullable(); //(Waktu sebenarnya yang diperlukan untuk menyelesaikan tugas)
+            $table->timestamps();
+
             $table->foreign('created_by')->references('id')->on('users');
             $table->foreign('assigned_to')->references('id')->on('users');
-            $table->string('status');
-            $table->date('due_date');
-            $table->timestamp('completed_at')->nullable();
-            $table->string('priority');
-            $table->integer('estimated_hours');
-            $table->integer('actual_hours')->nullable();
-            $table->timestamps();
         });
     }
 
