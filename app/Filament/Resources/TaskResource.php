@@ -2,17 +2,20 @@
 
 namespace App\Filament\Resources;
 
+use Filament\Forms;
+use App\Models\Task;
+use Filament\Tables;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use Illuminate\Support\Facades\Auth;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Select;
+use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\TaskResource\Pages;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\TaskResource\RelationManagers;
 use App\Filament\Resources\TaskResource\RelationManagers\TaskAssignmentsRelationManager;
-use App\Models\Task;
-use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
-use Filament\Tables;
-use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class TaskResource extends Resource
 {
@@ -24,32 +27,52 @@ class TaskResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('created_by')
+                // bagamaimana jika saya membuat select dengan relasi user 
+                Forms\Components\Select::make('task_id')
+                    ->relationship('asigne', 'name')
                     ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('assigned_to')
-                    ->numeric(),
+                    ->multiple()
+                    ->searchable()
+                    ->preload(),
                 Forms\Components\TextInput::make('title')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\Textarea::make('description')
                     ->required()
-                    ->maxLength(65535)
+                    ->maxLength(255)
                     ->columnSpanFull(),
-                Forms\Components\TextInput::make('status')
+                Hidden::make('created_by')
+                    ->default(Auth::user()->id),
+                Select::make('status')
                     ->required()
-                    ->maxLength(255),
+                    ->options([
+                        'To-Do' => 'To-Do',
+                        'In Progress' => 'In Progress',
+                        'Completed' => 'Completed',
+                        'Pending' => 'Pending',
+                        'Canceled' => 'Canceled',
+                        'On Hold' => 'On Hold',
+                        'Assigned' => 'Assigned',
+                        'Review' => 'Review',
+                    ])
+                    ->default('To-Do')
+                    ->searchable()
+                    ->preload(),
                 Forms\Components\DatePicker::make('due_date')
                     ->required(),
                 Forms\Components\DateTimePicker::make('completed_at'),
-                Forms\Components\TextInput::make('priority')
+                Select::make('priority')
                     ->required()
-                    ->maxLength(255),
+                    ->options(['low' => 'Low', 'medium' => 'Medium', 'high' => 'High'])
+                    ->default('low')
+                    ->searchable()
+                    ->preload(),
                 Forms\Components\TextInput::make('estimated_hours')
                     ->required()
                     ->numeric(),
                 Forms\Components\TextInput::make('actual_hours')
-                    ->numeric(),
+                    ->numeric()
+                    ->required(),
             ]);
     }
 
