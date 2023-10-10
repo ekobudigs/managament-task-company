@@ -15,18 +15,16 @@ return new class extends Migration
             $table->id(); // Primary Key
             $table->unsignedBigInteger('task_id');
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('assigned_by');
+
             $table->date('assignment_date');
-            $table->date('due_date_override')->nullable();
             $table->string('status');
             $table->text('comments')->nullable();
-            $table->boolean('notification_sent')->default(false);
+            $table->string('file')->nullable();
             $table->timestamps();
 
             // Foreign Key Constraints
             $table->foreign('task_id')->references('id')->on('tasks')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('assigned_by')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
