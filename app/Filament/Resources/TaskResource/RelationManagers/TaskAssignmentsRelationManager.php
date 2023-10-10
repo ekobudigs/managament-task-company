@@ -3,12 +3,16 @@
 namespace App\Filament\Resources\TaskResource\RelationManagers;
 
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\FileUpload;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Resources\RelationManagers\RelationManager;
 
 class TaskAssignmentsRelationManager extends RelationManager
 {
@@ -21,6 +25,15 @@ class TaskAssignmentsRelationManager extends RelationManager
                 Forms\Components\TextInput::make('comments')
                     ->required()
                     ->maxLength(255),
+                Hidden::make('user_id')
+                    ->default(Auth::user()->id),
+                Forms\Components\DatePicker::make('assignment_date')
+                    ->default(Carbon::now())
+                    ->required()
+                    ->readonly(),
+                Hidden::make('status')
+                    ->default('New'),
+                FileUpload::make('file')->downloadable()
             ]);
     }
 
@@ -38,8 +51,9 @@ class TaskAssignmentsRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                // Tables\Actions\EditAction::make(),
+                // Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
