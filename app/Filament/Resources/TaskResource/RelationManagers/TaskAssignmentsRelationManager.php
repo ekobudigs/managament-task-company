@@ -43,6 +43,7 @@ class TaskAssignmentsRelationManager extends RelationManager
 
     public function table(Table $table): Table
     {
+        $recipient = auth()->user();
         return $table
             ->recordTitleAttribute('comments')
             ->columns([
@@ -52,17 +53,9 @@ class TaskAssignmentsRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\AttachAction::make(),
-                Tables\Actions\CreateAction::make()
-                    ->successNotification(
-                        Notification::make()
-                            ->success()
-                            ->title('Task assignment created')
-                            ->body('A new task assignment has been created for the task "{task_name}".')
-                            ->icon('heroicon-o-bell')
-                            ->route('filament.resources.tasks.show', ['task' => $taskAssignment->task])
-                            ->sendToDatabase($record->created_by),
-                    ),
+                // Tables\Actions\AttachAction::make(),
+
+                Tables\Actions\CreateAction::make(),
                 // Tables\Actions\CreateAction::make()
                 //     ->successNotification(
                 //         Notification::make()
