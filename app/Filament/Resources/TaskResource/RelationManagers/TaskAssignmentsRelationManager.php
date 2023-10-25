@@ -48,6 +48,9 @@ class TaskAssignmentsRelationManager extends RelationManager
             ->recordTitleAttribute('comments')
             ->columns([
                 Tables\Columns\TextColumn::make('comments'),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
             ])
             ->filters([
                 //
@@ -149,4 +152,9 @@ class TaskAssignmentsRelationManager extends RelationManager
     //     dd($data);
     //     return $data;
     // }
+
+    public function isReadOnly(): bool
+    {
+        return false;
+    }
 }
