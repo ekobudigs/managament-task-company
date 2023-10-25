@@ -52,8 +52,8 @@ class TaskResource extends Resource
                         'Pending' => 'Pending',
                         'Canceled' => 'Canceled',
                         'On Hold' => 'On Hold',
-                        'Assigned' => 'Assigned',
-                        'Review' => 'Review',
+                        // 'Assigned' => 'Assigned',
+                        // 'Review' => 'Review',
                     ])
                     ->default('To-Do')
                     ->searchable()
@@ -78,17 +78,30 @@ class TaskResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table
+        // dd(Auth::user()->id);
+        $baseQuery = $table
+            ->deferLoading()
+            ->query(Task::whereHas('taskUsers', function ($query) {
+                $query->where('user_id', 2);
+            }))
             ->columns([
-                Tables\Columns\TextColumn::make('created_by')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('user.name')->label('Pembuat Task')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('assigned_to')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('taskUsers.user.name')->label('Mengerjakan Tugas')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('title')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('status')
+                    ->badge()
+                    ->color(fn (String $state): string => match ($state) {
+                        'To-Do' => 'gray',
+                        'In Progress' => 'warning',
+                        'Completed' => 'success',
+                        'Canceled' => 'danger',
+                        'Pending' => 'warning',
+                        'On Hold' => 'warning',
+                        'Pending' => 'warning',
+                    })
                     ->searchable(),
                 Tables\Columns\TextColumn::make('due_date')
                     ->date()
@@ -124,6 +137,18 @@ class TaskResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
+
+        // Cek jika ID pengguna adalah 1
+        if (Auth::user()->id != 1) {
+            $user = Auth::user()->id;
+
+            return $baseQuery->query(Task::whereHas('taskUsers', function ($query) use ($user) {
+                $query->where('user_id', $user);
+            }));
+        }
+
+        // Jika tidak, kembalikan query dasar tanpa query tambahan
+        return $baseQuery;
     }
 
     public static function getRelations(): array
