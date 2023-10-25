@@ -14,7 +14,7 @@ class Task extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'created_by');
     }
 
     public function taskAssignments()
@@ -24,5 +24,10 @@ class Task extends Model
     public function asigne()
     {
         return $this->belongsToMany(User::class);
+    }
+
+    public function taskUsers()
+    {
+        return $this->hasMany(TaskUser::class);
     }
 }
