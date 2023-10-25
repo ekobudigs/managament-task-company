@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\TaskResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\TaskResource\RelationManagers;
+use App\Filament\Resources\TaskResource\RelationManagers\TaskComentsRelationManager;
 use App\Filament\Resources\TaskResource\RelationManagers\TaskAssignmentsRelationManager;
 
 class TaskResource extends Resource
@@ -155,7 +156,8 @@ class TaskResource extends Resource
     public static function getRelations(): array
     {
         return [
-            TaskAssignmentsRelationManager::class
+            TaskAssignmentsRelationManager::class,
+            TaskComentsRelationManager::class
         ];
     }
 
