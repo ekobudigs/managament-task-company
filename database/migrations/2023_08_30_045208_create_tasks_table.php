@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('title');
             $table->text('description'); // (Deskripsi tugas)
             $table->unsignedBigInteger('created_by'); //(Foreign Key referencing Users table, ID pencipta tugas)
-            $table->unsignedBigInteger('assigned_to')->nullable(); //(Foreign Key referencing Users table, ID penerima tugas, bisa NULL jika belum ditugaskan)
             $table->string('status'); //status (Status tugas, misalnya ongoing, completed, pending, dll)
             $table->date('due_date'); // (Batas waktu tugas)
             $table->timestamp('completed_at')->nullable(); // (Datetime field, NULL jika belum selesai)
