@@ -131,6 +131,7 @@ class TaskResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -163,6 +164,7 @@ class TaskResource extends Resource
         return [
             'index' => Pages\ListTasks::route('/'),
             'create' => Pages\CreateTask::route('/create'),
+            'view' => Pages\ViewTask::route('/{record}'),
             'edit' => Pages\EditTask::route('/{record}/edit'),
         ];
     }
