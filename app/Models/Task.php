@@ -21,6 +21,10 @@ class Task extends Model
     {
         return $this->hasMany(TaskAssignments::class);
     }
+    public function TaskComents()
+    {
+        return $this->hasMany(TaskComments::class);
+    }
     public function asigne()
     {
         return $this->belongsToMany(User::class);
