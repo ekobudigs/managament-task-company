@@ -9,14 +9,16 @@ use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Illuminate\Support\Carbon;
+use App\Models\TaskAssignments;
+use Filament\Notifications\Actions\Action;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Hidden;
 use Filament\Notifications\Notification;
 use Filament\Forms\Components\FileUpload;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Resources\Concerns\HasRecord;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Resources\Concerns\HasRecord;
 
 class TaskAssignmentsRelationManager extends RelationManager
 {
@@ -58,7 +60,28 @@ class TaskAssignmentsRelationManager extends RelationManager
             ->headerActions([
                 // Tables\Actions\AttachAction::make(),
 
-                Tables\Actions\CreateAction::make(),
+                // Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()->after(function (TaskAssignments $product) {
+                    $task = Task::find($product->task_id);
+                    $createdBy = User::find($task->created_by);
+
+                    $recipient = auth()->user();
+                    $taskDescription =  $task->title;
+                    Notification::make()
+                            ->success()
+                            ->title('Task Selesai.')
+                            ->body("$recipient->name telah menyelesaikan tugas: $taskDescription.")
+                            ->icon('heroicon-o-bell')
+                            ->actions([
+                                Action::make('view')
+                                    ->button()
+                                    ->markAsRead()
+                                    ->url(route('filament.admin.resources.tasks.view', $product->task_id))
+                              
+                            ])
+                            ->sendToDatabase($createdBy);
+                    // dd($createdBy);
+                })
                 // Tables\Actions\CreateAction::make()
                 //     ->successNotification(
                 //         Notification::make()
@@ -92,8 +115,9 @@ class TaskAssignmentsRelationManager extends RelationManager
     //         ->body('The user has been created successfully.')
     //         ->sendToDatabase($recipient);
     // }
-    public function afterCreate(): Notification
+    protected function afterCreate(): void
     {
+        dd('eko');
         $taskId = $this->record->task_id;
         $task = Task::find($taskId);
         $createdBy = User::find($task->created_by);
@@ -111,9 +135,7 @@ class TaskAssignmentsRelationManager extends RelationManager
                 'parameters' => ['task' => $this->record],
             ]);
 
-        // Sesuaikan notifikasi di sini
-
-        return $notification;
+        $createdBy->notify($notification); // Send the notification
     }
 
     protected function getCreatedNotification(): ?Notification
