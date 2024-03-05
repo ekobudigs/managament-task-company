@@ -23,6 +23,8 @@ class UserResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?string $navigationGroup = 'Settings';
+
     public static function form(Form $form): Form
     {
         return $form
@@ -34,14 +36,14 @@ class UserResource extends Resource
                     ->email()
                     ->required()
                     ->maxLength(255),
-                    Select::make('department_id')
+                Select::make('department_id')
                     ->options(function () {
                         return Department::all()->pluck('name', 'id');
                     })
                     ->label('Department ')
                     ->required()
                     ->searchable(),
-                    Select::make('position_id')
+                Select::make('position_id')
                     ->options(function () {
                         return Position::all()->pluck('name', 'id');
                     })
@@ -52,22 +54,22 @@ class UserResource extends Resource
                     ->maxLength(255),
                 Forms\Components\DatePicker::make('hire_date'),
                 Forms\Components\DatePicker::make('birth_date'),
-               
+
                 Forms\Components\Textarea::make('address')
-                ->maxLength(65535)
-                ->columnSpanFull(),
+                    ->maxLength(65535)
+                    ->columnSpanFull(),
                 Forms\Components\TextInput::make('password')
-                ->password()
-                ->minLength(8)
-                ->same('password_confirmation')
-                ->dehydrateStateUsing(fn ($state) => Hash::make($state))
-                ->required(),
-            Forms\Components\TextInput::make('password_confirmation')
-                ->label('Password Confirmation')
-                ->password()
-                ->dehydrated(false)
-                ->required(),
-                    
+                    ->password()
+                    ->minLength(8)
+                    ->same('password_confirmation')
+                    ->dehydrateStateUsing(fn ($state) => Hash::make($state))
+                    ->required(),
+                Forms\Components\TextInput::make('password_confirmation')
+                    ->label('Password Confirmation')
+                    ->password()
+                    ->dehydrated(false)
+                    ->required(),
+
             ]);
     }
 
@@ -104,14 +106,14 @@ class UserResource extends Resource
                 ]),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -119,5 +121,5 @@ class UserResource extends Resource
             'create' => Pages\CreateUser::route('/create'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
-    }    
+    }
 }
