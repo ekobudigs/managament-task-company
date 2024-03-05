@@ -6,10 +6,10 @@ return [
 
     'preload_permissions' => true,
 
-    'navigation_section_group' => 'filament-spatie-roles-permissions::filament-spatie.section.roles_and_permissions', // Default uses language constant
+    'navigation_section_group' => 'Settings', // Default uses language constant
 
     'team_model' => \App\Models\Team::class,
-    
+
     'scope_to_tenant' => true,
 
     /*
@@ -34,7 +34,7 @@ return [
         ],
     ],
 
-    'default_guard_name' => null,
+    'default_guard_name' => 'web',
 
     'model_filter_key' => 'return \'%\'.$value;', // Eg: 'return \'%\'.$key.'\%\';'
 
