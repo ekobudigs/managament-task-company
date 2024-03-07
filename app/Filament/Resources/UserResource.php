@@ -50,6 +50,7 @@ class UserResource extends Resource
                     ->label('Position')
                     ->required()
                     ->searchable(),
+                    Select::make('roles')->multiple()->relationship('roles', 'name')->preload(),
                 Forms\Components\TextInput::make('contact_number')
                     ->maxLength(255),
                 Forms\Components\DatePicker::make('hire_date'),
@@ -99,6 +100,7 @@ class UserResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
