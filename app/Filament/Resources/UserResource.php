@@ -64,11 +64,13 @@ class UserResource extends Resource
                     ->minLength(8)
                     ->same('password_confirmation')
                     ->dehydrateStateUsing(fn ($state) => Hash::make($state))
+                    ->visibleOn('create')
                     ->required(),
                 Forms\Components\TextInput::make('password_confirmation')
                     ->label('Password Confirmation')
                     ->password()
                     ->dehydrated(false)
+                    ->visibleOn('create')
                     ->required(),
 
             ]);
