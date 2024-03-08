@@ -80,11 +80,11 @@ class TaskResource extends Resource
     public static function table(Table $table): Table
     {
         // dd(Auth::user()->id);
+        $userIDs = Auth::user()->id;
+     
         $baseQuery = $table
             ->deferLoading()
-            ->query(Task::whereHas('taskUsers', function ($query) {
-                $query->where('user_id', 2);
-            }))
+            ->query(Task::where('created_by', $userIDs))
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')->label('Pembuat Task')
                     ->sortable(),
@@ -140,7 +140,16 @@ class TaskResource extends Resource
                 ]),
             ]);
 
+            $users = Auth::user();
+            $hasRoleAdmin = $users->hasRole('Admin');
+            // dd($hasRole);
+
+            if($hasRoleAdmin){
+                return $baseQuery->query(Task::query());
+            }
+
         // Cek jika ID pengguna adalah 1
+        //untuk staff yang hanya update tugas dan comment 
         if (Auth::user()->id != 1) {
             $user = Auth::user()->id;
 
