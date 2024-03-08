@@ -36,7 +36,9 @@ class TaskComentsRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('comment_text')
             ->columns([
+                Tables\Columns\TextColumn::make('user.name'),
                 Tables\Columns\TextColumn::make('comment_text'),
+                Tables\Columns\TextColumn::make('created_at')->label('Tanggal'),
             ])
             ->filters([
                 //
@@ -45,13 +47,13 @@ class TaskComentsRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ViewAction::make(),
+                // Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //     Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 }
